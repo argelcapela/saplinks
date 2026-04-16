@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>SAP Workspace</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      background: #f5f6f7;
+    }
+
+    .sidebar {
+      width: 240px;
+      background-color: #0a6ed1;
+      color: white;
+      padding: 20px 10px;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .menu-item {
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 6px;
+      margin: 5px 8px;
+    }
+
+    .menu-item:hover,
+    .menu-item.active {
+      background-color: #085caf;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .search {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .group-title {
+      font-size: 16px;
+      margin: 20px 0 10px;
+      color: #333;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: #666;
+    }
+
+    footer {
+      padding: 10px;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      background: #fff;
+      border-top: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>SAP Hub</h2>
+    <div id="menu"></div>
+  </div>
+
+  <div class="main">
+    <div class="content">
+      <input class="search" placeholder="Buscar em todos os links..." oninput="renderCards(this.value)" />
+      <div id="content"></div>
+    </div>
+    <footer>
+      Criado por Argel Capela
+    </footer>
+  </div>
+
+  <script>
+    const links = [
+      {
+        group: "📚 Portais Oficiais",
+        items: [
+          { name: "SAP Help Portal", desc: "Documentação oficial", url: "https://help.sap.com" },
+          { name: "SAP Community", desc: "Fórum e dúvidas", url: "https://community.sap.com" },
+          { name: "SAP Developer Center", desc: "Recursos para devs", url: "https://developers.sap.com" },
+          { name: "Discovery Center", desc: "Missões BTP", url: "https://discovery-center.cloud.sap" },
+          { name: "SAP for Me", desc: "Portal do cliente", url: "https://me.sap.com" },
+          { name: "SAP News Center", desc: "Notícias oficiais", url: "https://news.sap.com" },
+          { name: "SAP Store", desc: "Marketplace SAP", url: "https://store.sap.com" },
+          { name: "SAP Support Portal", desc: "Suporte e incidentes", url: "https://support.sap.com" }
+        ]
+      },
+      {
+        group: "🔐 Segurança & Docs",
+        items: [
+          { name: "SAP Trust Center", desc: "Segurança e privacidade", url: "https://www.sap.com/about/trust-center.html" },
+          { name: "Cloud Services Documents", desc: "Docs de cloud", url: "https://www.sap.com/about/trust-center/cloud-services.html" },
+          { name: "Cloud Specifications", desc: "Especificações SAP", url: "https://www.sap.com/about/agreements/cloud-services.html" }
+        ]
+      },
+      {
+        group: "🎓 Aprendizado",
+        items: [
+          { name: "SAP Training", desc: "Cursos e certificações", url: "https://training.sap.com" }
+        ]
+      },
+      {
+        group: "🚀 Outros",
+        items: [
+          { name: "BDC", desc: "Business Data Cloud", url: "https://www.sap.com/products/data-cloud.html" },
+          { name: "SAP Architecture Center", desc: "Arquitetura SAP", url: "https://architecture.sap.com" },
+          { name: "SAP Events", desc: "Eventos SAP", url: "https://events.sap.com" }
+        ]
+      }
+    ];
+
+    function renderMenu() {
+      const menu = document.getElementById("menu");
+      menu.innerHTML = "";
+
+      links.forEach((group, index) => {
+        const div = document.createElement("div");
+        div.className = "menu-item";
+        div.innerText = group.group;
+        div.onclick = () => {
+          document.querySelectorAll(".menu-item").forEach(el => el.classList.remove("active"));
+          div.classList.add("active");
+          renderCards("", index);
+        };
+        menu.appendChild(div);
+      });
+    }
+
+    function renderCards(filter = "", groupIndex = null) {
+      const content = document.getElementById("content");
+      content.innerHTML = "";
+
+      const groupsToRender = groupIndex !== null ? [links[groupIndex]] : links;
+
+      groupsToRender.forEach(group => {
+        const filtered = group.items.filter(item =>
+          item.name.toLowerCase().includes(filter.toLowerCase())
+        );
+
+        if (filtered.length === 0) return;
+
+        const title = document.createElement("div");
+        title.className = "group-title";
+        title.innerText = group.group;
+        content.appendChild(title);
+
+        const grid = document.createElement("div");
+        grid.className = "grid";
+
+        filtered.forEach(item => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.onclick = () => window.open(item.url, "_blank");
+
+          card.innerHTML = `
+            <div class="card-title">${item.name}</div>
+            <div class="card-desc">${item.desc}</div>
+          `;
+
+          grid.appendChild(card);
+        });
+
+        content.appendChild(grid);
+      });
+    }
+
+    renderMenu();
+    renderCards();
+  </script>
+
+</body>
+</html>
