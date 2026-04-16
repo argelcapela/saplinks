@@ -2,7 +2,8 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>SAP Workspace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAP Links</title>
   <style>
     body {
       margin: 0;
@@ -10,14 +11,17 @@
       display: flex;
       height: 100vh;
       background: #f5f6f7;
+      overflow: hidden;
     }
 
+    /* SIDEBAR */
     .sidebar {
       width: 240px;
       background-color: #0a6ed1;
       color: white;
       padding: 20px 10px;
       overflow-y: auto;
+      transition: transform 0.3s ease;
     }
 
     .sidebar h2 {
@@ -37,20 +41,36 @@
       background-color: #085caf;
     }
 
+    /* MAIN */
     .main {
       flex: 1;
       display: flex;
       flex-direction: column;
+      height: 100vh;
+    }
+
+    .topbar {
+      display: none;
+      padding: 10px;
+      background: #0a6ed1;
+      color: white;
+      align-items: center;
+    }
+
+    .hamburger {
+      font-size: 22px;
+      cursor: pointer;
+      margin-right: 10px;
     }
 
     .content {
       flex: 1;
       padding: 20px;
-      overflow-y: auto;
+      overflow-x: hidden;
     }
 
     .search {
-      width: 100%;
+      width: 98%;
       padding: 12px;
       border-radius: 8px;
       border: 1px solid #ddd;
@@ -102,64 +122,171 @@
       color: #666;
       background: #fff;
       border-top: 1px solid #eee;
+      flex-shrink: 0;
+      overflow:hidden;
+    }
+
+   .whatsapp-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #25D366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+/* Tooltip */
+.whatsapp-btn::after {
+  content: "Fale comigo e envie uma sugestão de melhoria do Produto! 💬";
+  position: absolute;
+  right: 70px;
+  background: #333;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: 0.2s;
+  pointer-events: none;
+}
+
+/* Mostrar tooltip no hover */
+.whatsapp-btn:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+    .whatsapp-btn img {
+      width: 30px;
+      height: 30px;
+    }
+
+    /* OVERLAY */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      z-index: 999;
+    }
+
+    /* RESPONSIVO */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      .topbar {
+        display: flex;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        transform: translateX(-100%);
+        z-index: 1000;
+      }
+
+      .sidebar.active {
+        transform: translateX(0);
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="sidebar">
-    <h2>SAP Hub</h2>
+  <div class="overlay" onclick="toggleMenu()"></div>
+
+  <div class="sidebar" id="sidebar">
+    <h2 style="cursor:pointer;" onclick="goHome()">SAP Links</h2>
     <div id="menu"></div>
   </div>
 
   <div class="main">
+
+    <div class="topbar">
+      <div class="hamburger" onclick="toggleMenu()">☰</div>
+      SAP Links
+    </div>
+
     <div class="content">
       <input class="search" placeholder="Buscar em todos os links..." oninput="renderCards(this.value)" />
       <div id="content"></div>
     </div>
+
     <footer>
-      Criado por Argel Capela
+      Created by Argel Capela | Copyright © 2026 All Rights Reserved
     </footer>
   </div>
+
+  <a  href="https://wa.me/5511966076876?text=Olá,%20tenho%20uma%20sugestão%20para%20melhorar%20o%20SAP%20Links" target="_blank" class="whatsapp-btn">
+    <img alt="Enviar Sugestão de Melhoria!" src="https://cdn-icons-png.flaticon.com/512/733/733585.png" />
+  </a>
 
   <script>
     const links = [
       {
-        group: "📚 Portais Oficiais",
+        group: "⚡ Acesso Rápido",
         items: [
-          { name: "SAP Help Portal", desc: "Documentação oficial", url: "https://help.sap.com" },
-          { name: "SAP Community", desc: "Fórum e dúvidas", url: "https://community.sap.com" },
-          { name: "SAP Developer Center", desc: "Recursos para devs", url: "https://developers.sap.com" },
-          { name: "Discovery Center", desc: "Missões BTP", url: "https://discovery-center.cloud.sap" },
-          { name: "SAP for Me", desc: "Portal do cliente", url: "https://me.sap.com" },
-          { name: "SAP News Center", desc: "Notícias oficiais", url: "https://news.sap.com" },
-          { name: "SAP Store", desc: "Marketplace SAP", url: "https://store.sap.com" },
-          { name: "SAP Support Portal", desc: "Suporte e incidentes", url: "https://support.sap.com" }
+          { name: "BDC (Contrato)", desc: "Contrato Business Data Cloud", url: "https://www.sap.com/about/trust-center/agreements/cloud/cloud-services.html?search=business%20data%20cloud&sort=latest_desc&pdf-asset=80874c7c-417f-0010-bca6-c68f7e60039b&page=4" }
         ]
       },
       {
-        group: "🔐 Segurança & Docs",
+        group: "📚 Documentação & Consulta",
         items: [
-          { name: "SAP Trust Center", desc: "Segurança e privacidade", url: "https://www.sap.com/about/trust-center.html" },
-          { name: "Cloud Services Documents", desc: "Docs de cloud", url: "https://www.sap.com/about/trust-center/cloud-services.html" },
-          { name: "Cloud Specifications", desc: "Especificações SAP", url: "https://www.sap.com/about/agreements/cloud-services.html" }
+          { name: "Discovery Center", desc: "Serviços e missões BTP", url: "https://discovery-center.cloud.sap/" },
+          { name: "SAP Help Docs", desc: "Documentação oficial", url: "https://help.sap.com/docs/" },
+          { name: "SAP Community", desc: "Fórum SAP", url: "https://community.sap.com/" },
+          { name: "SAP Developers", desc: "Recursos para desenvolvedores", url: "https://developers.sap.com/" },
+          { name: "SAP Learning Architecture", desc: "Arquitetura SAP", url: "https://architecture.learning.sap.com/" },
+          { name: "SAP for Me", desc: "Portal do cliente", url: "https://accounts.sap.com/saml2/idp/sso" },
+          { name: "API Hub", desc: "APIs SAP", url: "https://api.sap.com/" },
+          { name: "SAP Support", desc: "Suporte SAP", url: "https://support.sap.com/en/index.html" }
         ]
       },
       {
         group: "🎓 Aprendizado",
         items: [
-          { name: "SAP Training", desc: "Cursos e certificações", url: "https://training.sap.com" }
+          { name: "Training & Certification", desc: "Cursos oficiais SAP", url: "https://www.sap.com/training-certification.html" }
+        ]
+      },
+      {
+        group: "📰 Notícias",
+        items: [
+          { name: "SAP News", desc: "Notícias oficiais", url: "https://news.sap.com/" },
+          { name: "SAP Events", desc: "Eventos globais", url: "https://www.sap.com/events.html#global-events" }
         ]
       },
       {
         group: "🚀 Outros",
         items: [
-          { name: "BDC", desc: "Business Data Cloud", url: "https://www.sap.com/products/data-cloud.html" },
-          { name: "SAP Architecture Center", desc: "Arquitetura SAP", url: "https://architecture.sap.com" },
-          { name: "SAP Events", desc: "Eventos SAP", url: "https://events.sap.com" }
+          { name: "SAP Brasil", desc: "Site institucional Brasil", url: "https://www.sap.com/brazil/index.html" },
+          { name: "SAP Store", desc: "Marketplace SAP", url: "https://www.sap.com/store.html" },
+          { name: "SAP Trust Center", desc: "Segurança e compliance", url: "https://www.sap.com/about/trust-center.html" },
+          { name: "Cloud Specifications", desc: "Especificações cloud", url: "https://www.sap.com/about/agreements/policies/cloud-service-specifications.html?sort=latest_desc" }
         ]
       }
     ];
+
+    function toggleMenu() {
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.querySelector(".overlay");
+      sidebar.classList.toggle("active");
+      // overlay.style.display = sidebar.classList.contains("active") ? "block" : "none";
+    }
 
     function renderMenu() {
       const menu = document.getElementById("menu");
@@ -173,6 +300,7 @@
           document.querySelectorAll(".menu-item").forEach(el => el.classList.remove("active"));
           div.classList.add("active");
           renderCards("", index);
+          toggleMenu();
         };
         menu.appendChild(div);
       });
@@ -214,6 +342,11 @@
 
         content.appendChild(grid);
       });
+    }
+
+    function goHome() {
+      document.querySelectorAll(".menu-item").forEach(el => el.classList.remove("active"));
+      renderCards();
     }
 
     renderMenu();
